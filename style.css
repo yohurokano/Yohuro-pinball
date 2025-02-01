@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+    margin: 0;
+    background: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    text-align: center;
+    font-family: 'Press Start 2P', cursive;
+}
+
+h1 {
+    color: red;
+    font-size: 24px;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px white;
+}
+
+canvas {
+    background: url('https://yohkano.com/assets/pixel_bg.png') no-repeat center center;
+    background-size: cover;
+    border: 3px solid red;
+}
+
+#score, #highScore {
+    color: white;
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid red;
+    border-radius: 8px;
+}
+
+/* Mobile Controls */
+.controls {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+button {
+    background: red;
+    color: white;
+    font-size: 14px;
+    font-family: 'Press Start 2P', cursive;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 48%;
+    cursor: pointer;
+}
+
+button:active {
+    background: white;
+    color: red;
+}
