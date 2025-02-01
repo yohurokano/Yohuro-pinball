@@ -31,12 +31,7 @@ let paddles = {
 
 const bounceSound = new Audio("https://www.fesliyanstudios.com/play-mp3/4388");
 
-// Mobile Controls
-document.getElementById("leftBtn").addEventListener("touchstart", () => paddles.left.rotate = true);
-document.getElementById("leftBtn").addEventListener("touchend", () => paddles.left.rotate = false);
-document.getElementById("rightBtn").addEventListener("touchstart", () => paddles.right.rotate = true);
-document.getElementById("rightBtn").addEventListener("touchend", () => paddles.right.rotate = false);
-
+// Keyboard Controls
 document.addEventListener("keydown", (event) => {
     if (event.key === "ArrowLeft") paddles.left.rotate = true;
     if (event.key === "ArrowRight") paddles.right.rotate = true;
@@ -47,21 +42,18 @@ document.addEventListener("keyup", (event) => {
     if (event.key === "ArrowRight") paddles.right.rotate = false;
 });
 
+// Mobile Touch Controls
+document.getElementById("leftBtn").addEventListener("touchstart", () => paddles.left.rotate = true);
+document.getElementById("leftBtn").addEventListener("touchend", () => paddles.left.rotate = false);
+document.getElementById("rightBtn").addEventListener("touchstart", () => paddles.right.rotate = true);
+document.getElementById("rightBtn").addEventListener("touchend", () => paddles.right.rotate = false);
+
 function drawBall() {
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
     ctx.fillStyle = ball.color;
     ctx.fill();
     ctx.closePath();
-}
-
-function drawPaddle(paddle) {
-    ctx.save();
-    ctx.translate(paddle.x + paddle.width / 2, paddle.y + paddle.height / 2);
-    ctx.rotate(paddle.angle);
-    ctx.fillStyle = "white";
-    ctx.fillRect(-paddle.width / 2, -paddle.height / 2, paddle.width, paddle.height);
-    ctx.restore();
 }
 
 function drawBumpers() {
@@ -83,27 +75,6 @@ function updateBall() {
         ball.dx *= -1;
         playSound();
     }
-    if (ball.y - ball.radius < 0) {
-        ball.dy *= -1;
-        playSound();
-    }
-
-    for (let key in paddles) {
-        let paddle = paddles[key];
-        if (
-            ball.y + ball.radius > paddle.y &&
-            ball.y + ball.radius < paddle.y + paddle.height &&
-            ball.x > paddle.x &&
-            ball.x < paddle.x + paddle.width
-        ) {
-            ball.dy = -ball.speed;
-            ball.dx += Math.random() * 2 - 1;
-            score += 10;
-            ball.color = "white";
-            updateScore();
-            playSound();
-        }
-    }
 
     if (ball.y > canvas.height) {
         if (score > highScore) {
@@ -114,7 +85,6 @@ function updateBall() {
         ball.y = 300;
         ball.dy = -3;
         ball.dx = 2;
-        ball.color = "white";
         score = 0;
         updateScore();
     }
@@ -122,7 +92,6 @@ function updateBall() {
 
 function updateScore() {
     document.getElementById("score").innerText = "Score: " + score;
-    document.getElementById("highScore").innerText = "High Score: " + highScore;
 }
 
 function playSound() {
@@ -133,8 +102,6 @@ function playSound() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
-    drawPaddle(paddles.left);
-    drawPaddle(paddles.right);
     drawBumpers();
     updateBall();
     requestAnimationFrame(draw);
