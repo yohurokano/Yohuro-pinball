@@ -2,7 +2,7 @@
 
 body {
     margin: 0;
-    background: #000;
+    background: black;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -11,37 +11,13 @@ body {
     overflow: hidden;
     text-align: center;
     font-family: 'Press Start 2P', cursive;
-    position: relative;
-}
-
-/* Animated Background */
-body::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: url('https://yohkano.com/assets/pixel_bg.png') no-repeat center center;
-    background-size: cover;
-    filter: blur(2px);
-    animation: glitch 6s infinite alternate;
-}
-
-/* Glitch Effect */
-@keyframes glitch {
-    0% { transform: translate(0, 0); }
-    20% { transform: translate(-2px, 2px); }
-    40% { transform: translate(2px, -2px); }
-    60% { transform: translate(-2px, -2px); }
-    80% { transform: translate(2px, 2px); }
-    100% { transform: translate(0, 0); }
 }
 
 h1 {
     color: red;
-    font-size: 28px;
+    font-size: 24px;
     margin-bottom: 10px;
     text-shadow: 3px 3px white, -3px -3px black;
-    position: relative;
 }
 
 /* Scoreboard */
@@ -59,7 +35,6 @@ h1 {
     margin: 5px 0;
 }
 
-/* Game Container */
 .game-container {
     width: 100%;
     max-width: 420px;
@@ -89,13 +64,11 @@ button {
     cursor: pointer;
     box-shadow: 0 0 10px red;
     transition: transform 0.2s ease-in-out;
-}
-
-button:hover {
-    transform: scale(1.1);
+    touch-action: manipulation;
 }
 
 button:active {
+    transform: scale(1.2);
     background: white;
     color: red;
 }
