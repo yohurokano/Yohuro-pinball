@@ -18,64 +18,47 @@ let score = 0;
 let highScore = localStorage.getItem("highScore") || 0;
 document.getElementById("highScore").innerText = "High Score: " + highScore;
 
-const bumpers = [
-    { x: 100, y: 200, radius: 15 },
-    { x: 300, y: 250, radius: 15 },
-    { x: 200, y: 100, radius: 20 }
-];
-
+// **🔥 Added Paddles**
 let paddles = {
-    left: { x: 50, y: 500, width: 80, height: 10, angle: 0, rotate: false },
-    right: { x: 270, y: 500, width: 80, height: 10, angle: 0, rotate: false }
+    left: { x: 50, y: 500, width: 80, height: 10, angle: 0, moving: false },
+    right: { x: 270, y: 500, width: 80, height: 10, angle: 0, moving: false }
 };
 
-const bounceSound = new Audio("https://www.fesliyanstudios.com/play-mp3/4388");
+// **🔥 Added Paddles Drawing Function**
+function drawPaddle(paddle) {
+    ctx.fillStyle = "white";
+    ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+}
 
 // **💡 Keyboard Controls**
 document.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowLeft") paddles.left.rotate = true;
-    if (event.key === "ArrowRight") paddles.right.rotate = true;
+    if (event.key === "ArrowLeft") paddles.left.moving = true;
+    if (event.key === "ArrowRight") paddles.right.moving = true;
 });
 
 document.addEventListener("keyup", (event) => {
-    if (event.key === "ArrowLeft") paddles.left.rotate = false;
-    if (event.key === "ArrowRight") paddles.right.rotate = false;
+    if (event.key === "ArrowLeft") paddles.left.moving = false;
+    if (event.key === "ArrowRight") paddles.right.moving = false;
 });
 
 // **💡 Fully Fixed Mobile Touch Controls**
-document.getElementById("leftBtn").addEventListener("touchstart", () => paddles.left.rotate = true);
-document.getElementById("leftBtn").addEventListener("touchend", () => paddles.left.rotate = false);
-document.getElementById("rightBtn").addEventListener("touchstart", () => paddles.right.rotate = true);
-document.getElementById("rightBtn").addEventListener("touchend", () => paddles.right.rotate = false);
+document.getElementById("leftBtn").addEventListener("touchstart", () => paddles.left.moving = true);
+document.getElementById("leftBtn").addEventListener("touchend", () => paddles.left.moving = false);
+document.getElementById("rightBtn").addEventListener("touchstart", () => paddles.right.moving = true);
+document.getElementById("rightBtn").addEventListener("touchend", () => paddles.right.moving = false);
 
-function drawBall() {
-    ctx.beginPath();
-    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    ctx.fillStyle = ball.color;
-    ctx.fill();
-    ctx.closePath();
-}
-
-function drawBumpers() {
-    bumpers.forEach(bumper => {
-        ctx.beginPath();
-        ctx.arc(bumper.x, bumper.y, bumper.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "red";
-        ctx.fill();
-        ctx.closePath();
-    });
-}
-
+// **🔥 Update Ball Physics**
 function updateBall() {
     ball.x += ball.dx;
     ball.y += ball.dy;
-    ball.dy += 0.1;
+    ball.dy += 0.1; // Gravity Effect
 
+    // Bounce off walls
     if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) {
         ball.dx *= -1;
-        playSound();
     }
 
+    // Bounce off paddles
     for (let key in paddles) {
         let paddle = paddles[key];
         if (
@@ -85,12 +68,13 @@ function updateBall() {
             ball.x < paddle.x + paddle.width
         ) {
             ball.dy = -ball.speed;
+            ball.dx += Math.random() * 2 - 1; // Randomize bounce angle
             score += 10;
             updateScore();
-            playSound();
         }
     }
 
+    // Reset if ball falls
     if (ball.y > canvas.height) {
         if (score > highScore) {
             highScore = score;
@@ -105,21 +89,35 @@ function updateBall() {
     }
 }
 
-function updateScore() {
-    document.getElementById("score").innerText = "Score: " + score;
+// **🔥 Update Paddle Movement**
+function updatePaddles() {
+    if (paddles.left.moving) paddles.left.angle = Math.min(Math.PI / 4, paddles.left.angle + 0.1);
+    else paddles.left.angle = Math.max(0, paddles.left.angle - 0.1);
+
+    if (paddles.right.moving) paddles.right.angle = Math.min(Math.PI / 4, paddles.right.angle + 0.1);
+    else paddles.right.angle = Math.max(0, paddles.right.angle - 0.1);
 }
 
-function playSound() {
-    bounceSound.currentTime = 0;
-    bounceSound.play();
-}
-
+// **🔥 Draw Everything**
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBall();
-    drawBumpers();
+    
+    drawPaddle(paddles.left);
+    drawPaddle(paddles.right);
+
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+    ctx.fillStyle = ball.color;
+    ctx.fill();
+    ctx.closePath();
+
     updateBall();
+    updatePaddles();
     requestAnimationFrame(draw);
+}
+
+function updateScore() {
+    document.getElementById("score").innerText = "Score: " + score;
 }
 
 draw();
