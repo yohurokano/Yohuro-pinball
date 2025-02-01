@@ -31,7 +31,7 @@ let paddles = {
 
 const bounceSound = new Audio("https://www.fesliyanstudios.com/play-mp3/4388");
 
-// Keyboard Controls
+// **💡 Keyboard Controls**
 document.addEventListener("keydown", (event) => {
     if (event.key === "ArrowLeft") paddles.left.rotate = true;
     if (event.key === "ArrowRight") paddles.right.rotate = true;
@@ -42,7 +42,7 @@ document.addEventListener("keyup", (event) => {
     if (event.key === "ArrowRight") paddles.right.rotate = false;
 });
 
-// Mobile Touch Controls
+// **💡 Fully Fixed Mobile Touch Controls**
 document.getElementById("leftBtn").addEventListener("touchstart", () => paddles.left.rotate = true);
 document.getElementById("leftBtn").addEventListener("touchend", () => paddles.left.rotate = false);
 document.getElementById("rightBtn").addEventListener("touchstart", () => paddles.right.rotate = true);
@@ -74,6 +74,21 @@ function updateBall() {
     if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) {
         ball.dx *= -1;
         playSound();
+    }
+
+    for (let key in paddles) {
+        let paddle = paddles[key];
+        if (
+            ball.y + ball.radius > paddle.y &&
+            ball.y + ball.radius < paddle.y + paddle.height &&
+            ball.x > paddle.x &&
+            ball.x < paddle.x + paddle.width
+        ) {
+            ball.dy = -ball.speed;
+            score += 10;
+            updateScore();
+            playSound();
+        }
     }
 
     if (ball.y > canvas.height) {
